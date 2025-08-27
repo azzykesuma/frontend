@@ -1,8 +1,16 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
+import Cookies from 'js-cookie'
 import logo from '../logo.svg'
+import { BASE_CONFIG } from '@/lib/constant'
 
 export const Route = createFileRoute('/')({
   component: App,
+  loader: () => {
+    const accessToken = Cookies.get(BASE_CONFIG.ACCESS_TOKEN)
+    if (!accessToken) {
+      redirect({ to: '/login', throw: true })
+    }
+  },
 })
 
 function App() {
