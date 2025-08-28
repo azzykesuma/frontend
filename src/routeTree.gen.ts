@@ -9,12 +9,19 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as WeaponIndexRouteImport } from './routes/weapon/index'
+import { Route as MainGameIndexRouteImport } from './routes/main-game/index'
 import { Route as LoginIndexRouteImport } from './routes/login/index'
+import { Route as rootIndexRouteImport } from './routes/(root)/index'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const WeaponIndexRoute = WeaponIndexRouteImport.update({
+  id: '/weapon/',
+  path: '/weapon/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MainGameIndexRoute = MainGameIndexRouteImport.update({
+  id: '/main-game/',
+  path: '/main-game/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginIndexRoute = LoginIndexRouteImport.update({
@@ -22,40 +29,60 @@ const LoginIndexRoute = LoginIndexRouteImport.update({
   path: '/login/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const rootIndexRoute = rootIndexRouteImport.update({
+  id: '/(root)/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof rootIndexRoute
   '/login': typeof LoginIndexRoute
+  '/main-game': typeof MainGameIndexRoute
+  '/weapon': typeof WeaponIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/': typeof rootIndexRoute
   '/login': typeof LoginIndexRoute
+  '/main-game': typeof MainGameIndexRoute
+  '/weapon': typeof WeaponIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/(root)/': typeof rootIndexRoute
   '/login/': typeof LoginIndexRoute
+  '/main-game/': typeof MainGameIndexRoute
+  '/weapon/': typeof WeaponIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login'
+  fullPaths: '/' | '/login' | '/main-game' | '/weapon'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login'
-  id: '__root__' | '/' | '/login/'
+  to: '/' | '/login' | '/main-game' | '/weapon'
+  id: '__root__' | '/(root)/' | '/login/' | '/main-game/' | '/weapon/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  rootIndexRoute: typeof rootIndexRoute
   LoginIndexRoute: typeof LoginIndexRoute
+  MainGameIndexRoute: typeof MainGameIndexRoute
+  WeaponIndexRoute: typeof WeaponIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/weapon/': {
+      id: '/weapon/'
+      path: '/weapon'
+      fullPath: '/weapon'
+      preLoaderRoute: typeof WeaponIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/main-game/': {
+      id: '/main-game/'
+      path: '/main-game'
+      fullPath: '/main-game'
+      preLoaderRoute: typeof MainGameIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login/': {
@@ -65,12 +92,21 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(root)/': {
+      id: '/(root)/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof rootIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  rootIndexRoute: rootIndexRoute,
   LoginIndexRoute: LoginIndexRoute,
+  MainGameIndexRoute: MainGameIndexRoute,
+  WeaponIndexRoute: WeaponIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
