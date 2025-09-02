@@ -12,7 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WeaponIndexRouteImport } from './routes/weapon/index'
 import { Route as MainGameIndexRouteImport } from './routes/main-game/index'
 import { Route as LoginIndexRouteImport } from './routes/login/index'
-import { Route as rootIndexRouteImport } from './routes/(root)/index'
+import { Route as classIndexRouteImport } from './routes/(class)/index'
 
 const WeaponIndexRoute = WeaponIndexRouteImport.update({
   id: '/weapon/',
@@ -29,27 +29,27 @@ const LoginIndexRoute = LoginIndexRouteImport.update({
   path: '/login/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const rootIndexRoute = rootIndexRouteImport.update({
-  id: '/(root)/',
+const classIndexRoute = classIndexRouteImport.update({
+  id: '/(class)/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof rootIndexRoute
+  '/': typeof classIndexRoute
   '/login': typeof LoginIndexRoute
   '/main-game': typeof MainGameIndexRoute
   '/weapon': typeof WeaponIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof rootIndexRoute
+  '/': typeof classIndexRoute
   '/login': typeof LoginIndexRoute
   '/main-game': typeof MainGameIndexRoute
   '/weapon': typeof WeaponIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/(root)/': typeof rootIndexRoute
+  '/(class)/': typeof classIndexRoute
   '/login/': typeof LoginIndexRoute
   '/main-game/': typeof MainGameIndexRoute
   '/weapon/': typeof WeaponIndexRoute
@@ -59,11 +59,11 @@ export interface FileRouteTypes {
   fullPaths: '/' | '/login' | '/main-game' | '/weapon'
   fileRoutesByTo: FileRoutesByTo
   to: '/' | '/login' | '/main-game' | '/weapon'
-  id: '__root__' | '/(root)/' | '/login/' | '/main-game/' | '/weapon/'
+  id: '__root__' | '/(class)/' | '/login/' | '/main-game/' | '/weapon/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  rootIndexRoute: typeof rootIndexRoute
+  classIndexRoute: typeof classIndexRoute
   LoginIndexRoute: typeof LoginIndexRoute
   MainGameIndexRoute: typeof MainGameIndexRoute
   WeaponIndexRoute: typeof WeaponIndexRoute
@@ -92,18 +92,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(root)/': {
-      id: '/(root)/'
+    '/(class)/': {
+      id: '/(class)/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof rootIndexRouteImport
+      preLoaderRoute: typeof classIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  rootIndexRoute: rootIndexRoute,
+  classIndexRoute: classIndexRoute,
   LoginIndexRoute: LoginIndexRoute,
   MainGameIndexRoute: MainGameIndexRoute,
   WeaponIndexRoute: WeaponIndexRoute,

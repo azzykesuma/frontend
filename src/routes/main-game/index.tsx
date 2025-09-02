@@ -44,6 +44,7 @@ function RouteComponent() {
   const { data: playerDetailsData } = useQuery(queryPlayerDetails)
 
   const [isEnemyAttacking, setIsEnemyAttacking] = useState(false)
+  const [currentEnemyImage, setCurrentEnemyImage] = useState(PlayerImage)
   const [playerSprite, setPlayerSprite] = useState(PlayerImage)
   const [playerState, setPlayerState] = useState({
     health: 100,
@@ -66,7 +67,6 @@ function RouteComponent() {
 
   // Initialize the first enemy when the data is ready
   useEffect(() => {
-    console.log('effect to check current enemy')
     if (shuffleEnemies?.[0]) {
       setCurrentEnemy(shuffleEnemies[enemyIndex])
     }
@@ -74,19 +74,17 @@ function RouteComponent() {
 
   // Update enemyState whenever the currentEnemy changes
   useEffect(() => {
-    console.log('effect to check enemy state')
     if (currentEnemy && playerDetailsData?.data.data) {
       setEnemyState({
         health: currentEnemy.enemy_base_hp,
         mp: currentEnemy.enemy_base_mp,
         damage: calculateEnemyDamage(currentEnemy, playerDetailsData.data.data),
       })
+      setCurrentEnemyImage(currentEnemy.enemy_image)
     }
   }, [currentEnemy, playerDetailsData])
 
-  // Handle player state initialization
   useEffect(() => {
-    console.log('effect to check player state')
     if (playerDetailsData?.data.data) {
       setPlayerState({
         health: playerDetailsData.data.data.class_base_hp,
@@ -95,8 +93,6 @@ function RouteComponent() {
       })
     }
   }, [playerDetailsData])
-
-  // **The buggy useEffect has been removed**
 
   const handleAttack = () => {
     setPlayerSprite(PlayerAttack)
@@ -110,6 +106,9 @@ function RouteComponent() {
       ...enemyState,
       health: newEnemyHealth,
     })
+    if (currentEnemy) {
+      setCurrentEnemyImage(currentEnemy.enemy_image_attacked)
+    }
 
     setTimeout(() => {
       setPlayerSprite(PlayerImage)
@@ -117,19 +116,15 @@ function RouteComponent() {
 
       // Check if the enemy is dead using the new health value
       if (newEnemyHealth <= 0) {
-        console.log('enemy died')
         setIsEnemyAttacking(false)
 
         // **Handle advancing to the next enemy here, directly**
         const nextIndex = enemyIndex + 1
-        console.log('nextIndex', nextIndex)
         // Check if there are more enemies
         if (shuffleEnemies?.[nextIndex]) {
-          console.log('Advancing to next enemy:', shuffleEnemies[nextIndex])
           setCurrentEnemy(shuffleEnemies[nextIndex])
           setEnemyIndex(nextIndex)
         } else {
-          console.log('You defeated all enemies!')
           setCurrentEnemy(null)
         }
         return // Return to prevent the counter-attack
@@ -145,9 +140,11 @@ function RouteComponent() {
         mp: playerState.mp - 10,
         damage: playerState.damage,
       })
+      setCurrentEnemyImage(currentEnemy?.enemy_image_attack || PlayerImage)
 
       setTimeout(() => {
         setIsEnemyAttacking(false)
+        setCurrentEnemyImage(currentEnemy?.enemy_image || PlayerImage)
         setPlayerSprite(PlayerImage)
       }, 1000)
     }, 1000)
@@ -170,7 +167,7 @@ function RouteComponent() {
 
         {currentEnemy && (
           <EnemyCharacter
-            enemyImage={currentEnemy.enemy_image}
+            enemyImage={currentEnemyImage}
             enemyName={currentEnemy.enemy_name}
             currentHealth={enemyState.health}
             maxHealth={currentEnemy.enemy_base_hp}

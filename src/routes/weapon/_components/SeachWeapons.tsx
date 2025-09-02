@@ -2,6 +2,7 @@ import { Filter, Search } from 'lucide-react'
 import { useState } from 'react'
 import { elements, sortOptions, weaponTypes } from './WeaponElements'
 import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 
 interface SeachWeaponsProps {
   filters: {
@@ -28,18 +29,17 @@ const SeachWeapons = ({ filters, handleFilterChange }: SeachWeaponsProps) => {
             placeholder="Search weapons..."
             value={searchTerm}
             onChange={(e) => handleFilterChange('searchTerm', e.target.value)}
-            className="w-full pl-10 pr-4 py-3 bg-slate-800/50 border border-slate-700 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-slate-400"
+            className="w-full pl-10 pr-4  bg-slate-800/50 border border-slate-700 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-slate-400 py-6"
           />
         </div>
 
-        {/* Filter toggle */}
-        <button
+        <Button
           onClick={() => setShowFilters(!showFilters)}
           className="px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors duration-300 flex items-center space-x-2"
         >
           <Filter className="w-5 h-5" />
           <span>Filters</span>
-        </button>
+        </Button>
       </div>
 
       {/* Expanded filters */}

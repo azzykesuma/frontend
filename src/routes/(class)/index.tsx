@@ -2,19 +2,22 @@ import { queryOptions, useQuery } from '@tanstack/react-query'
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
 import Cookies from 'js-cookie'
 import { Shield, Sword, Target, Wind, Zap } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import ClassGrid from './_components/ClassGrid'
 import SelectedClass from './_components/SelectedClass'
 import { ClassSelectionSkeleton } from './_components/SkeletonSection'
-import type { IMasterClass } from '@/lib/types'
+import type { BaseResponseDto, IMasterClass } from '@/lib/types'
+import type { AxiosResponse } from 'axios'
+import type { IPlayerDetails } from '../main-game/_schema/Player'
 import { decodeJwt } from '@/lib/cookies'
 import { BASE_CONFIG, QUERY_KEYS } from '@/lib/constant'
 import { useApiMutation } from '@/hooks/useMutation.hooks'
 import { Button } from '@/components/ui/button'
 import { getMasterClass } from '@/api/masterClass'
+import { getPlayerDetails } from '@/api/player'
 
-export const Route = createFileRoute('/(root)/')({
+export const Route = createFileRoute('/(class)/')({
   component: App,
   loader: () => {
     const accessToken = Cookies.get(BASE_CONFIG.REFRESH_TOKEN)
@@ -37,8 +40,17 @@ const queryMasterClass = queryOptions({
   queryFn: getMasterClass,
 })
 
+const queryPlayerDetails = queryOptions<
+  AxiosResponse<BaseResponseDto<IPlayerDetails>>
+>({
+  queryKey: [QUERY_KEYS.PLAYER_DETAILS],
+  queryFn: getPlayerDetails,
+  refetchOnWindowFocus: false,
+})
+
 function App() {
   const { data, isLoading } = useQuery(queryMasterClass)
+  const { data: playerDetailsData } = useQuery(queryPlayerDetails)
   const navigate = useNavigate()
   const [selectedClass, setSelectedClass] = useState<IMasterClass | null>(null)
   const user = decodeJwt()
@@ -64,6 +76,18 @@ function App() {
       playerId: user.id,
     })
   }
+
+  useEffect(() => {
+    if (playerDetailsData?.data.data && playerDetailsData.data.data.class_id) {
+      const classId = playerDetailsData.data.data.class_id
+      if (classId && data?.data.data) {
+        const playerSelectedClass = data.data.data.find(
+          (item: IMasterClass) => item.class_id === +classId,
+        )
+        setSelectedClass(playerSelectedClass || null)
+      }
+    }
+  }, [playerDetailsData, data])
 
   if (isLoading) {
     return <ClassSelectionSkeleton showDetailedView />

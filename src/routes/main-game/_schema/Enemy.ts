@@ -9,4 +9,6 @@ export interface IEnemy {
   enemy_resistance: any
   enemy_weakness: number
   enemy_image: string
+  enemy_image_attack: string
+  enemy_image_attacked: string
 }

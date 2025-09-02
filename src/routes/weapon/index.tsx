@@ -1,6 +1,6 @@
 import { queryOptions, useQuery } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { toast } from 'sonner'
 import { motion as m } from 'motion/react'
@@ -11,11 +11,13 @@ import WeaponSkeleton from './_components/WeaponSkeleton'
 import type { AxiosResponse } from 'axios'
 import type { BaseResponseDto } from '@/lib/types'
 import type { IWeapon } from './_schema/schema'
+import type { IPlayerDetails } from '../main-game/_schema/Player'
 import { QUERY_KEYS } from '@/lib/constant'
 import { getWeapon } from '@/api/weapon'
 import { Button } from '@/components/ui/button'
 import { useApiMutation } from '@/hooks/useMutation.hooks'
 import { decodeJwt } from '@/lib/cookies'
+import { getPlayerDetails } from '@/api/player'
 
 export const Route = createFileRoute('/weapon/')({
   component: WeaponPage,
@@ -28,8 +30,17 @@ const queryWeapon = queryOptions<
   queryFn: getWeapon,
 })
 
+const queryPlayerDetails = queryOptions<
+  AxiosResponse<BaseResponseDto<IPlayerDetails>>
+>({
+  queryKey: [QUERY_KEYS.PLAYER_DETAILS],
+  queryFn: getPlayerDetails,
+  refetchOnWindowFocus: false,
+})
+
 function WeaponPage() {
   const { data: weaponData, isLoading } = useQuery(queryWeapon)
+  const { data: playerDetailsData } = useQuery(queryPlayerDetails)
   const [selectedWeapon, setSelectedWeapon] = useState<IWeapon | null>(null)
   const navigate = useNavigate()
   const [filters, setFilters] = useState({
@@ -48,6 +59,24 @@ function WeaponPage() {
       },
     },
   )
+  useEffect(() => {
+    if (
+      playerDetailsData?.data.data &&
+      playerDetailsData.data.data.weapon_id &&
+      weaponData?.data.data
+    ) {
+      const weaponList = weaponData.data.data
+      const playerWeaponId = playerDetailsData.data.data.weapon_id
+
+      if (playerWeaponId) {
+        const selectedPlayerWeapon = weaponList.find(
+          (weapon) => weapon.weapon_id === +playerWeaponId,
+        )
+        setSelectedWeapon(selectedPlayerWeapon || null)
+      }
+    }
+  }, [playerDetailsData, weaponData])
+
   if (isLoading) return <WeaponSkeleton />
   if (!weaponData || !weaponData.data.data) return <div>No data</div>
 
