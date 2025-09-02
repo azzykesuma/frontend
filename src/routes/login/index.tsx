@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Gamepad2, Shield } from 'lucide-react'
-import LoginForm from './_components/_LoginForm'
+import LoginForm from './-components/-LoginForm'
 
 export const Route = createFileRoute('/login/')({
   component: RouteComponent,

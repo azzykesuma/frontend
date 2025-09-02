@@ -1,5 +1,5 @@
-import type { IPlayerDetails } from '../_schema/Player'
-import type { IEnemy } from '../_schema/Enemy'
+import type { IPlayerDetails } from '../-schema/Player'
+import type { IEnemy } from '../-schema/Enemy'
 
 interface StatsProps {
   currentEnemy: IEnemy

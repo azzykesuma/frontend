@@ -7,8 +7,8 @@ import {
   Target,
   Wand2,
 } from 'lucide-react'
-import { getRarityColor, getRarityLabel } from '../_util'
-import type { IWeapon } from '../_schema/schema'
+import { getRarityColor, getRarityLabel } from '../-util'
+import type { IWeapon } from '../-schema/schema'
 
 interface WeaponCardProps {
   weapon: IWeapon

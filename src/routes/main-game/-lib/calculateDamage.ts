@@ -1,5 +1,5 @@
-import type { IEnemy } from '../_schema/Enemy'
-import type { IPlayerDetails } from '../_schema/Player'
+import type { IEnemy } from '../-schema/Enemy'
+import type { IPlayerDetails } from '../-schema/Player'
 import { BASE_STATS } from '@/lib/constant'
 
 export const calculateEnemyDamage = (

@@ -1,6 +1,6 @@
 import { Filter, Search } from 'lucide-react'
 import { useState } from 'react'
-import { elements, sortOptions, weaponTypes } from './WeaponElements'
+import { elements, sortOptions, weaponTypes } from './_WeaponElements'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 

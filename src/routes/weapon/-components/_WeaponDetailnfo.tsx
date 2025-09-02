@@ -1,6 +1,6 @@
-import { getRarityLabel } from '../_util'
-import { elements, weaponTypes } from './WeaponElements'
-import type { IWeapon } from '../_schema/schema'
+import { getRarityLabel } from '../-util'
+import { elements, weaponTypes } from './_WeaponElements'
+import type { IWeapon } from '../-schema/schema'
 
 interface WeaponDetailnfoProps {
   selectedWeapon: IWeapon
